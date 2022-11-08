@@ -14,7 +14,7 @@ func Handler() {
 	credit := &api.API{}
 	credit.RegisterRoutes(r)
 
-	PORT := os.Getenv("PORT")
+	PORT := os.Getenv("PORTS")
 	if PORT == "" {
 		PORT = "8081"
 	}

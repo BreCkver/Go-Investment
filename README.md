@@ -11,11 +11,13 @@ The app coverage the next use cases..
 * If it is not possible to assign a value, all values must receive to zero
 * Summary Stored in database
 * Get the applications' summary
+* Services folder has a unit test with coverage from 96.7%
 
 #### Out of Scope
 * If it is not possible to assign a value, app doesn't show details
 * Summary doesn't show historical
 * Summary is global, no by user
+* Integration test
 
 ## Project structure
 The architecture in this moment is simple, so it has the next structure:
@@ -49,3 +51,18 @@ api                 -> Here we store http-server settings, etc.
 ## Publish
 - The app was published in heroku, the link is:
     https://go-investment.herokuapp.com/
+
+
+## Examples
+    ### `credit-assignment`
+        - url: https://go-investment.herokuapp.com/credit-assignment
+        - body
+        ```json 
+                {
+                    "investment" : 1500
+                }
+        ```
+    
+    ### `statistics`
+        - url: https://go-investment.herokuapp.com/statistics
+        - body: empty

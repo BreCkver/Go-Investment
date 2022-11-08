@@ -2,7 +2,6 @@ package services
 
 import (
 	"errors"
-	"log"
 	"math"
 
 	"github.com/BreCkver/Go-Investment/data"
@@ -13,6 +12,7 @@ const (
 	threeHundred = 300
 	fiveHundred  = 500
 	sevenHundred = 700
+	multiple     = 100
 )
 
 type CreditAssigner interface {
@@ -20,10 +20,10 @@ type CreditAssigner interface {
 }
 
 type CreditAssignerService struct {
-	da *data.CreditAssignerData
+	da data.DBDataAccess
 }
 
-func NewCreditAssignmentService(data *data.CreditAssignerData) *CreditAssignerService {
+func NewCreditAssignmentService(data data.DBDataAccess) *CreditAssignerService {
 	return &CreditAssignerService{
 		da: data,
 	}
@@ -36,11 +36,11 @@ func (s *CreditAssignerService) Assign(investment int32) (typeCount300, typeCoun
 
 	typeCount300, typeCount500, typeCount700 = 0, 0, 0
 
-	if investment <= 10 {
+	if !isMod(investment, multiple) {
 		errG = errors.New("Invalid param")
 	}
 
-	for investment > 10 {
+	for investment > 0 {
 		isValid = false
 		_, err = isValidDecrease(investment, fiveHundred)
 		if err == nil {
@@ -93,11 +93,10 @@ func isMod(inv int32, value int32) bool {
 	return inv%value == 0
 }
 
-func (s *CreditAssignerService) SaveStatistics(investment int32, successfully bool) {
-
+func (s *CreditAssignerService) SaveStatistics(investment int32, successfully bool) error {
 	summaryLast, err := s.GetStatistics()
 	if err != nil {
-		log.Fatal("Error GetStatistics: ", err)
+		return err
 	}
 
 	summaryLast.AssignmentTotal += 1
@@ -113,20 +112,21 @@ func (s *CreditAssignerService) SaveStatistics(investment int32, successfully bo
 
 	err = s.da.UpdateLastCreditAssignmentSummary()
 	if err != nil {
-		log.Fatal("Error UpdateLastCreditAssignmentSummary: ", err)
+		return err
 	}
 
-	_, err = s.da.CreditAssignmentSummarySave(&summaryLast)
+	_, err = s.da.CreditAssignmentSummarySave(summaryLast)
 	if err != nil {
-		log.Fatal("Error CreditAssignmentSummarySave: ", err)
+		return err
 	}
+
+	return nil
 }
 
-func (s *CreditAssignerService) GetStatistics() (models.CreditAssignmentSummary, error) {
+func (s *CreditAssignerService) GetStatistics() (*models.CreditAssignmentSummary, error) {
 
 	summaryLast, err := s.da.GetLastCreditAssignmentSummary()
 	if err != nil {
-		log.Fatal("Error GetLastCreditAssignmentSummary: ", err)
 		return summaryLast, err
 
 	} else {

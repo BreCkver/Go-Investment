@@ -22,7 +22,7 @@ func (api *API) creditAssignment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data := data.NewCreditAssignerData()
+	var data data.DBDataAccess = data.NewCreditAssignerData()
 	service := services.NewCreditAssignmentService(data)
 	typeCount300, typeCount500, typeCount700, err := service.Assign(request.Investment)
 	result := models.NewCreditAssignment(typeCount300, typeCount500, typeCount700)
@@ -40,7 +40,7 @@ func (api *API) creditAssignment(w http.ResponseWriter, r *http.Request) {
 }
 
 func (api *API) statistics(w http.ResponseWriter, r *http.Request) {
-	data := data.NewCreditAssignerData()
+	var data data.DBDataAccess = data.NewCreditAssignerData()
 	service := services.NewCreditAssignmentService(data)
 	summary, err := service.GetStatistics()
 	w.Header().Set("context-type", "application/json")

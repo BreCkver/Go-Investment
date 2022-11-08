@@ -16,6 +16,12 @@ const (
 	collectionName = "creditAssigner"
 )
 
+type DBDataAccess interface {
+	CreditAssignmentSummarySave(summary *models.CreditAssignmentSummary) (string, error)
+	GetLastCreditAssignmentSummary() (*models.CreditAssignmentSummary, error)
+	UpdateLastCreditAssignmentSummary() error
+}
+
 type CreditAssignerData struct {
 }
 
@@ -34,7 +40,7 @@ func (d *CreditAssignerData) CreditAssignmentSummarySave(summary *models.CreditA
 	col := db.Collection(collectionName)
 	result, err := col.InsertOne(ctx, summary)
 	if err != nil {
-		log.Printf("Error guardando info %v", err.Error())
+		log.Printf("Error strore information %v", err.Error())
 		return "", err
 	}
 
@@ -42,7 +48,7 @@ func (d *CreditAssignerData) CreditAssignmentSummarySave(summary *models.CreditA
 	return objIdentifier.Hex(), nil
 }
 
-func (d *CreditAssignerData) GetLastCreditAssignmentSummary() (models.CreditAssignmentSummary, error) {
+func (d *CreditAssignerData) GetLastCreditAssignmentSummary() (*models.CreditAssignmentSummary, error) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
@@ -61,22 +67,22 @@ func (d *CreditAssignerData) GetLastCreditAssignmentSummary() (models.CreditAssi
 
 	if err != nil {
 		log.Fatal(err.Error())
-		return summary, err
+		return &summary, err
 	}
 
 	for cursor.Next(context.TODO()) {
 		err := cursor.Decode(&summary)
 		if err != nil {
 			last := results[len(results)-1]
-			return last, err
+			return &last, err
 		}
 		results = append(results, summary)
 	}
 
 	if len(results) >= 1 {
-		return results[len(results)-1], nil
+		return &results[len(results)-1], nil
 	} else {
-		return summary, nil
+		return &summary, nil
 	}
 
 }
