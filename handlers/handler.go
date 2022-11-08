@@ -3,6 +3,7 @@ package handlers
 import (
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/BreCkver/Go-Investment/api"
 	"github.com/gorilla/mux"
@@ -13,13 +14,16 @@ func Handler() {
 	credit := &api.API{}
 	credit.RegisterRoutes(r)
 
-	PORT := "8080"
+	PORT := os.Getenv("PORT")
+	if PORT == "" {
+		PORT = "8081"
+	}
 
 	srv := &http.Server{
 		Addr:    ":" + PORT,
 		Handler: r,
 	}
 
-	log.Printf("Listening... %s", srv.Addr)
+	log.Println("Listening...")
 	log.Fatal(srv.ListenAndServe())
 }
