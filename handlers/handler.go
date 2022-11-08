@@ -13,7 +13,7 @@ func Handler() {
 	credit := &api.API{}
 	credit.RegisterRoutes(r)
 
-	PORT := "8081"
+	PORT := "8080"
 
 	srv := &http.Server{
 		Addr:    ":" + PORT,
