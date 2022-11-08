@@ -1,4 +1,4 @@
-# Title: st-codeChallenge
+# Title: Investment
 ## Overview: 
 
 When we have financial resources from new investors, we like to ask ourselves what is the best option to invest them.
@@ -18,6 +18,8 @@ The app coverage the next use cases..
 * Summary doesn't show historical
 * Summary is global, no by user
 * Integration test
+* GoRoutines to improve the performance 
+* Methods description for major understanding
 
 ## Project structure
 The architecture in this moment is simple, so it has the next structure:

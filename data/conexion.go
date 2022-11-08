@@ -3,14 +3,14 @@ package data
 import (
 	"context"
 	"log"
+	"os"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func Conexion() *mongo.Client {
-	//os.Getenv("MONGODB_URI")
-	clientOptions := options.Client().ApplyURI("mongodb+srv://userTransaction:3F5KYgCkMvJZZmEe@cluster0.uywov.mongodb.net/?retryWrites=true&w=majority")
+	clientOptions := options.Client().ApplyURI(os.Getenv("MONGODB_URI"))
 	client, err := mongo.Connect(context.TODO(), clientOptions)
 
 	if err != nil {
